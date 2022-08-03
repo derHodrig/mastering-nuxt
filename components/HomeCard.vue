@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card nuxt :to="'/homes/' + home.objectID">
     <v-img height="200" :src="home.images[0]" />
     <v-card-title>
       {{ home.title }}
