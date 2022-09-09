@@ -29,20 +29,83 @@
     <v-sheet height="800" width="800">
       <div ref="map" style="height: 800px; width: 800px"></div>
     </v-sheet>
+    <v-row dense class="d-flex justify-center mt-3">
+      <v-col v-for="review in reviews" :key="review.objectID" cols="6" md="4">
+        <v-card height="100%">
+          <v-row class="d-flex justify-center mt-2">
+            <v-avatar size="120">
+              <v-img :src="review.reviewer.image"></v-img>
+            </v-avatar>
+          </v-row>
+          <v-card-title>{{ review.reviewer.name }}</v-card-title>
+          <v-card-subtitle>
+            {{ formatDate(review.date) }}
+          </v-card-subtitle>
+          <v-card-text>
+            <short-text :text="review.comment" :target="160"></short-text>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row dense class="d-flex justify-center mt-3">
+      <v-col cols="6" md="4">
+        <v-card height="100%">
+          <v-row class="d-flex justify-center mt-2">
+            <v-avatar size="120">
+              <v-img :src="user.image"></v-img>
+            </v-avatar>
+          </v-row>
+          <v-card-title>
+            {{ user.name }}
+          </v-card-title>
+          <v-card-subtitle>
+            {{ formatDate(user.joined) }} | Reviews:
+            {{ user.reviewCount }}
+          </v-card-subtitle>
+          <v-card-text>
+            <short-text :text="user.description" :target="160"></short-text>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
+import ShortText from '~/components/ShortText'
 export default {
   name: 'SingleHomePage',
+  components: { ShortText },
   async asyncData({ params, $dataApi, error }) {
-    const { json, ok, status, statusText } = await $dataApi.getHome(params.id)
+    const homeResponse = await $dataApi.getHome(params.id)
+    const reviewResponse = await $dataApi.getReviewsByHomeId(params.id)
+    const userResponse = await $dataApi.getUserByHomeId(params.id)
 
-    if (!ok) {
-      return error({ statusCode: status, message: statusText })
+    if (!homeResponse.ok) {
+      return error({
+        statusCode: homeResponse.status,
+        message: homeResponse.statusText,
+      })
+    }
+    if (!reviewResponse.ok) {
+      return error({
+        statusCode: reviewResponse.status,
+        message: reviewResponse.statusText,
+      })
     }
 
-    return { home: json }
+    if (!userResponse.ok) {
+      return error({
+        statusCode: userResponse.status,
+        message: userResponse.statusText,
+      })
+    }
+
+    return {
+      home: homeResponse.json,
+      reviews: reviewResponse.json.hits,
+      user: userResponse.json.hits[0],
+    }
   },
   data() {
     return {
@@ -60,6 +123,15 @@ export default {
       this.home._geoloc.lat,
       this.home._geoloc.lng
     )
+  },
+  methods: {
+    formatDate(dateStr) {
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('de-DE', {
+        month: 'long',
+        year: 'numeric',
+      })
+    },
   },
 }
 </script>

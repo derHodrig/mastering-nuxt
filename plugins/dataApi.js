@@ -8,17 +8,57 @@ export default function (ctx, inject) {
 
   inject('dataApi', {
     getHome,
+    getReviewsByHomeId,
+    getUserByHomeId,
   })
 
   async function getHome(homeId) {
     try {
       return unWrap(
         await fetch(
-          `https://${appId}-dsn.algolia.net/1/indexes/mastering_nuxt/${homeId}`,
+          `https://${appId}-dsn.algolia.net/1/indexes/homes/${homeId}`,
           {
             headers,
           }
         )
+      )
+    } catch (e) {
+      return getErrorResponse(e)
+    }
+  }
+
+  async function getReviewsByHomeId(homeId) {
+    try {
+      return unWrap(
+        await fetch(
+          `https://${appId}-dsn.algolia.net/1/indexes/reviews/query`,
+          {
+            headers,
+            method: 'POST',
+            body: JSON.stringify({
+              filters: `homeId:${homeId}`,
+              hitsPerPage: 6,
+              attributesToHighlight: [],
+            }),
+          }
+        )
+      )
+    } catch (e) {
+      return getErrorResponse(e)
+    }
+  }
+
+  async function getUserByHomeId(homeId) {
+    try {
+      return unWrap(
+        await fetch(`https://${appId}-dsn.algolia.net/1/indexes/users/query`, {
+          headers,
+          method: 'POST',
+          body: JSON.stringify({
+            filters: `homeId:${homeId}`,
+            attributesToHighlight: [],
+          }),
+        })
       )
     } catch (e) {
       return getErrorResponse(e)

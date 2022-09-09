@@ -1,12 +1,36 @@
 <template>
   <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/"> Home page </NuxtLink>
+    <v-container>
+      <v-row>
+        <v-col
+          v-if="error.statusCode === 404"
+          class="d-flex flex-column align-center"
+        >
+          <v-img
+            :src="require('@/assets/images/error-404.svg')"
+            :max-height="800"
+            contain
+          ></v-img>
+          <h1 class="mt-6">
+            {{ pageNotFound }}
+          </h1>
+
+          <v-btn outlined nuxt to="/" color="primary" class="mt-4">
+            Zur Startseite
+          </v-btn>
+        </v-col>
+        <v-col v-else>
+          <v-img
+            :src="require('@/assets/images/error-other.svg')"
+            :max-height="800"
+            contain
+          ></v-img>
+          <h1 class="mt-6">
+            {{ otherError }}
+          </h1>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-app>
 </template>
 
@@ -22,8 +46,9 @@ export default {
   },
   data() {
     return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred',
+      pageNotFound: 'Uups, die aufgerufene Seite konnte nicht gefunden werden.',
+      otherError:
+        'Das sieht nicht gut aus. Sollte dieses Problem weiterhin bestehen, wenden Sie sich an unseren Support.',
     }
   },
   head() {
