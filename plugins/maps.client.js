@@ -8,7 +8,7 @@ export default function (ctx, inject) {
   function addScript() {
     const script = document.createElement('script')
     script.src =
-      'https://maps.googleapis.com/maps/api/js?key=AIzaSyC2OHFrAZsf-FV886RZMhFZ_XI9iVp2pw8&libraries=places&callback=initMap'
+      'https://maps.googleapis.com/maps/api/js?key=TempDeleted&libraries=places&callback=initMap'
     script.async = true
     window.initMap = initMap
     document.head.appendChild(script)
