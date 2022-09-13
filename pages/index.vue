@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-row>
+      <h3>BackendUrl: {{ $dataApi.beUrl }}</h3>
+    </v-row>
+    <v-row>
       <v-col v-for="home in homes" :key="home.objectID" cols="12" md="6" xl="4">
         <home-card :home="home" />
       </v-col>

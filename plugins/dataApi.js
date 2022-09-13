@@ -1,3 +1,4 @@
+import connection from '~/assets/connection.json'
 export default function (ctx, inject) {
   const appId = 'MER3KOMRZN'
   const apiKey = 'a527eb08587abc0ec28f85bc2b7c3aab'
@@ -6,10 +7,13 @@ export default function (ctx, inject) {
     'X-Algolia-Application-Id': appId,
   }
 
+  const beUrl = connection.backendUrl
+
   inject('dataApi', {
     getHome,
     getReviewsByHomeId,
     getUserByHomeId,
+    beUrl,
   })
 
   async function getHome(homeId) {
